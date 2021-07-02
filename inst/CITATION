@@ -1,0 +1,11 @@
+citHeader("To cite npwbs in publications use:")
+
+citEntry(entry = "TechReport",
+  title        = "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation",
+  author       = personList(as.person("Gordon J. Ross")),
+  institution = "University of Edinburgh",
+  year         = "2021",
+
+  textVersion  =  paste("Gordon J. Ross (2021).", "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation")
+)
+
