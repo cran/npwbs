@@ -5,6 +5,7 @@ citEntry(entry = "TechReport",
   author       = personList(as.person("Gordon J. Ross")),
   institution = "University of Edinburgh",
   year         = "2021",
+  Url 	= "https://arxiv.org/abs/2107.01742",
 
   textVersion  =  paste("Gordon J. Ross (2021).", "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation")
 )
