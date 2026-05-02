@@ -1,12 +1,15 @@
 citHeader("To cite npwbs in publications use:")
 
-citEntry(entry = "TechReport",
-  title        = "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation",
-  author       = personList(as.person("Gordon J. Ross")),
-  institution = "University of Edinburgh",
-  year         = "2021",
-  Url 	= "https://arxiv.org/abs/2107.01742",
-
-  textVersion  =  paste("Gordon J. Ross (2021).", "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation")
+bibentry(
+  bibtype = "Unpublished",
+  title = "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation",
+  author = c(person(given = c("Gordon", "J."), family = "Ross")),
+  year = "2021",
+  note = "arXiv:2107.01742",
+  url = "https://arxiv.org/abs/2107.01742",
+  textVersion = paste(
+    "Ross, G. J. (2026).",
+    "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation.",
+    "arXiv:2107.01742."
+  )
 )
-

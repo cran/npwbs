@@ -1,7 +1,46 @@
 
-mysample <- function(x,size,replace=FALSE,prob=NULL) {
-  if (length(x)==1) {x <- c(x,x)}
-  sample(x,size,replace,prob)
+minimumSegmentLength <- function(test) {
+  if (test == "MW") {return(8L)}
+  if (test == "LP") {return(10L)}
+  stop(sprintf("Error: unsupported test '%s'", test))
+}
+
+thresholdCalibrationMaxN <- function() {
+  10000L
+}
+
+prepareThresholds <- function(thresholds, yLength) {
+  calibratedMaxN <- thresholdCalibrationMaxN()
+  if (length(thresholds) < calibratedMaxN) {
+    stop("Error: bundled threshold vector is shorter than the supported calibration range")
+  }
+  if (yLength > calibratedMaxN) {
+    warning(
+      sprintf(
+        "Precomputed WBS-Lepage thresholds are calibrated up to n = %s; using the n = %s threshold for this longer segment.",
+        calibratedMaxN, calibratedMaxN
+      )
+    )
+  }
+  if (length(thresholds) > calibratedMaxN) {
+    thresholds[(calibratedMaxN + 1L):length(thresholds)] <- thresholds[calibratedMaxN]
+  }
+  if (length(thresholds) < yLength) {
+    thresholds <- c(thresholds, rep(thresholds[calibratedMaxN], yLength - length(thresholds)))
+  }
+  thresholds
+}
+
+sampleWBSInterval <- function(n, minlength) {
+  if (n < minlength) {
+    stop("Error: n must be at least minlength")
+  }
+
+  maxStart <- n - minlength + 1L
+  start <- sample.int(maxStart, 1L)
+  minEnd <- start + minlength - 1L
+  end <- sample.int(n - minEnd + 1L, 1L) + minEnd - 1L
+  c(start = start, end = end)
 }
 
 mannWhitneySegment <- function(y,d=2,doabs=TRUE) {
@@ -82,15 +121,15 @@ WBS <- function(y,sims=10000,test="MW",d=2) {
   starts <- numeric(sims)
   ends <- numeric(sims)
   n <- length(y)
-  minlength <- 8
-  if (test=="LP") {minlength=10}
-  for (i in 1:sims) {
-    start <- mysample(1:(length(y)-minlength),1)
-    end <- mysample( (start+minlength-1):n,1)
+  minlength <- minimumSegmentLength(test)
+  for (i in seq_len(sims)) {
+    interval <- sampleWBSInterval(n, minlength)
+    start <- interval[["start"]]
+    end <- interval[["end"]]
     if (test=="MW") {
-      vals[i] <- max(mannWhitneySegment(y[start:end],d=2))
+      vals[i] <- max(mannWhitneySegment(y[start:end],d=d))
     } else if (test=="LP") {
-      vals[i] <- max(lepageSegment(y[start:end],d=2))
+      vals[i] <- max(lepageSegment(y[start:end],d=d))
     }
     starts[i] <- start
     ends[i] <- end
@@ -104,6 +143,12 @@ detectChanges <- function(y,alpha=0.05,prune=TRUE,M=10000,d=2,displayOutput=FALS
   if (alpha != 0.05 && alpha != 0.01) {
     stop("Error: only supported values for alpha are 0.05 and 0.01")
   }
+  if (M != 10000) {
+    stop("Error: bundled thresholds currently support only M=10000")
+  }
+  if (d != 2) {
+    stop("Error: bundled thresholds currently support only d=2")
+  }
 
   thresholds <- NULL
   if (alpha == 0.05) {
@@ -111,16 +156,11 @@ detectChanges <- function(y,alpha=0.05,prune=TRUE,M=10000,d=2,displayOutput=FALS
   } else if (alpha == 0.01) {
     thresholds <- LPthresholds01
   }
-
-  if (length(thresholds) < length(y)) {
-    warning("Warning: length(y) is longer than maximum precomputed threshold n. Procedure will still work, but false positives may be slightly inflated")
-    z <-length(thresholds)
-    thresholds <- c(thresholds, rep(thresholds[z], length(y)-z))
-  }
+  thresholds <- prepareThresholds(thresholds, length(y))
 
   cps <-  detectChanges_aux(y,1,length(y),test,thresholds,M,d,displayOutput)
   if (prune==TRUE) {
-    cps <- prunecps(y,cps,test,thresholds,M=10000,d=2)
+    cps <- prunecps(y,cps,test,thresholds,M=M,d=d)
   }
   return(cps)
 }
@@ -128,9 +168,7 @@ detectChanges <- function(y,alpha=0.05,prune=TRUE,M=10000,d=2,displayOutput=FALS
 
 
 detectChanges_aux <- function(y,start,end,test,thresholds,M=10000,d=2,displayOutput=FALSE) {
-  minlength <- NA
-  if (test=="MW") {minlength=8}
-  if (test=="LP") {minlength=10}
+  minlength <- minimumSegmentLength(test)
 
   n <- end-start+1
 
@@ -147,10 +185,10 @@ detectChanges_aux <- function(y,start,end,test,thresholds,M=10000,d=2,displayOut
     thisend <- start + val$ends[ind] -1
     z <- y[thisstart:thisend]
     k <- NA
-    if (test=="MW") {k <- which.max(mannWhitneySegment(z))}
-    if (test=="LP") {k <- which.max(lepageSegment(z))}
-    k <- k + thisstart  -1 #check indexing
-    #k <- k + start-1
+    if (test=="MW") {k <- which.max(mannWhitneySegment(z,d=d))}
+    if (test=="LP") {k <- which.max(lepageSegment(z,d=d))}
+    # Returned changepoint k denotes a split between y[k] and y[k + 1].
+    k <- k + thisstart  -1
 
     if (displayOutput==TRUE) {
       print(sprintf("found change point at %s on [%s,%s] with statistic %s",k,start,end, max(val$statistics)))
@@ -160,6 +198,7 @@ detectChanges_aux <- function(y,start,end,test,thresholds,M=10000,d=2,displayOut
 }
 
 prunecps <- function(y,cps,test,thresholds,M=10000,d=2) {
+  minlength <- minimumSegmentLength(test)
   cps <- c(0,cps,length(y))
 
   while (TRUE) {
@@ -170,9 +209,11 @@ prunecps <- function(y,cps,test,thresholds,M=10000,d=2) {
     while(TRUE) {
      # print(i)
       if (i >= length(cps)) {break}
+      # The merged interval is (cps[i-1] + 1):cps[i+1], so its inclusive
+      # length is cps[i+1] - cps[i-1].
       n <- cps[i+1] - cps[i-1]
 
-      if ( (test=="LP" && n < 10) || (test=="LP" && n < 8)) {
+      if (n < minlength) {
       	cps <- cps[-i]; next #sequence is too short to find any chnages
       }
 

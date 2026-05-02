@@ -1,14 +1,19 @@
 Package: npwbs
 Type: Package
-Title: Nonparametric Multiple Change Point Detection Using WBS
-Version: 0.2.0
-Author: Gordon J. Ross
-Maintainer: Gordon J. Ross <gordon.ross@ed.ac.uk>
-Description: Implements the procedure from G. J. Ross (2021) - "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation" <arxiv:2107.01742>. This uses a version of Wild Binary Segmentation to detect multiple location-scale (i.e. mean and/or variance) change points in a sequence of univariate observations, with a strict control on the probability of incorrectly detecting a change point in a sequence which does not contain any.
+Title: Nonparametric Multiple Change Point Detection Using Wild Binary
+        Segmentation
+Version: 0.3.0
+Authors@R: person(given = c("Gordon", "J."),
+                  family = "Ross",
+                  role = c("aut", "cre"),
+                  email = "gordon.ross@ed.ac.uk")
+Description: Implements a procedure for detecting multiple location-scale change points in a sequence of univariate observations, as described in Ross (2026) "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation" <doi:10.48550/arXiv.2107.01742>. The method combines Wild Binary Segmentation with a rank-based statistic and provides calibrated thresholds for controlling the probability of incorrectly detecting a change point in a homogeneous sequence.
 Depends: R (>= 3.6.0)
 License: GPL-3
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2021-07-06 01:09:12 UTC; gotdonross
+Packaged: 2026-05-01 20:37:04 UTC; rosss
+Author: Gordon J. Ross [aut, cre]
+Maintainer: Gordon J. Ross <gordon.ross@ed.ac.uk>
 Repository: CRAN
-Date/Publication: 2021-07-06 16:00:06 UTC
+Date/Publication: 2026-05-02 18:30:02 UTC

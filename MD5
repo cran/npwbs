@@ -1,6 +1,8 @@
-dff9397b63ad2001cfab79ce303ac5a3 *DESCRIPTION
+b6c301b4bd0401eb081f38293a76da49 *DESCRIPTION
 32190a8ccef2d5380f068b777ff3cc30 *NAMESPACE
-f8e59813d54f06c4043ff71396971b48 *R/package-functions.R
-261d77fbe5ff3c9e9fedecf95c6c1036 *R/sysdata.rda
-3f5038976aba93c1bf62ed96502c814b *inst/CITATION
-afe710e0eae5da65dedb81d107709a74 *man/detectChanges.Rd
+11719436508db6f53bfdbf6537a8269f *NEWS.md
+2d53ff4b518e6a4ffba579c99359c600 *R/package-functions.R
+db0f76bbb27c95140d8db2853ab58051 *R/sysdata.rda
+7adc0eab2582f29f54b271bdf137f535 *inst/CITATION
+407158bd1f937368989a8ed1cbc9b284 *man/detectChanges.Rd
+be2be0c3baea036bac0e95273f68e226 *tests/test-package.R
