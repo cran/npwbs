@@ -4,7 +4,7 @@ bibentry(
   bibtype = "Unpublished",
   title = "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation",
   author = c(person(given = c("Gordon", "J."), family = "Ross")),
-  year = "2021",
+  year = "2026",
   note = "arXiv:2107.01742",
   url = "https://arxiv.org/abs/2107.01742",
   textVersion = paste(

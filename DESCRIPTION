@@ -2,18 +2,28 @@ Package: npwbs
 Type: Package
 Title: Nonparametric Multiple Change Point Detection Using Wild Binary
         Segmentation
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: person(given = c("Gordon", "J."),
                   family = "Ross",
                   role = c("aut", "cre"),
                   email = "gordon.ross@ed.ac.uk")
-Description: Implements a procedure for detecting multiple location-scale change points in a sequence of univariate observations, as described in Ross (2026) "Nonparametric Detection of Multiple Location-Scale Change Points via Wild Binary Segmentation" <doi:10.48550/arXiv.2107.01742>. The method combines Wild Binary Segmentation with a rank-based statistic and provides calibrated thresholds for controlling the probability of incorrectly detecting a change point in a homogeneous sequence.
-Depends: R (>= 3.6.0)
-License: GPL-3
-Encoding: UTF-8
-NeedsCompilation: no
-Packaged: 2026-05-01 20:37:04 UTC; rosss
 Author: Gordon J. Ross [aut, cre]
 Maintainer: Gordon J. Ross <gordon.ross@ed.ac.uk>
+Description: Implements nonparametric multiple change-point detection for
+    univariate sequences using Wild Binary Segmentation, as described in
+    Ross (2026) "Nonparametric Detection of Multiple Location-Scale Change
+    Points via Wild Binary Segmentation"
+    <doi:10.48550/arXiv.2107.01742>. The package provides Mann--Whitney,
+    Mood, Lepage, Cramér--von Mises, and modified Baumgartner rank-based
+    statistics, together with method-specific thresholds for controlling
+    the probability of incorrectly detecting a change point in a homogeneous
+    sequence.
+Depends: R (>= 3.6.0)
+Imports: Rcpp
+LinkingTo: Rcpp
+License: GPL-3
+Encoding: UTF-8
+NeedsCompilation: yes
+Packaged: 2026-07-28 04:23:21 UTC; rosss
 Repository: CRAN
-Date/Publication: 2026-05-02 18:30:02 UTC
+Date/Publication: 2026-07-28 08:20:02 UTC
