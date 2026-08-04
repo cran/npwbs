@@ -1,5 +1,5 @@
 minimumSegmentLength <- function(test) {
-  if (!test %in% c("lepage", "mw", "mood", "cvm", "baumgartner")) {
+  if (!test %in% c("lepage", "mw", "mood", "cvm", "baumgartner", "zhang")) {
     stop(sprintf("Error: unsupported method '%s'", test))
   }
   10L
@@ -10,6 +10,15 @@ thresholdCalibrationMaxN <- function() {
 }
 
 prepareThresholds <- function(thresholds, yLength, method = "lepage") {
+  if (method == "zhang") {
+    if (length(thresholds) < 3000L) {
+      stop("Error: bundled Zhang threshold vector is shorter than 3000")
+    }
+    if (yLength > 3000L) {
+      stop("The Zhang method currently supports sequences of length at most 3000.")
+    }
+    return(thresholds[seq_len(yLength)])
+  }
   calibratedMaxN <- thresholdCalibrationMaxN()
   if (length(thresholds) < calibratedMaxN) {
     stop("Error: bundled threshold vector is shorter than the supported calibration range")
@@ -44,6 +53,10 @@ scanWBSBatch <- function(y, starts, ends, test, d = 2) {
     mood = cpp_scan_mood(y, starts, ends, d),
     cvm = cpp_scan_cvm(y, starts, ends, d),
     baumgartner = cpp_scan_baumgartner(y, starts, ends, d),
+    zhang = {
+      moments <- .zhang_moment_artifacts(max(ends - starts + 1L))
+      cpp_scan_zhang(y, starts, ends, d, moments$bundled, moments$extended)
+    },
     stop(sprintf("Error: unsupported method '%s'", test))
   )
 }
@@ -74,7 +87,8 @@ selectThresholds <- function(method, alpha) {
     mw = MWthresholds05,
     mood = Moodthresholds05,
     cvm = CVMthresholds05,
-    baumgartner = BaumgartnerThresholds05
+    baumgartner = BaumgartnerThresholds05,
+    zhang = ZhangThresholds05
   )
 }
 
@@ -84,8 +98,8 @@ detectChanges <- function(y, alpha = 0.05, prune = TRUE, M = 10000, d = 2,
     stop("Error: y must be a non-empty finite numeric vector")
   }
   if (!is.character(method) || length(method) != 1L || is.na(method) ||
-      !method %in% c("lepage", "mw", "mood", "cvm", "baumgartner")) {
-    stop("Error: method must be exactly one of 'lepage', 'mw', 'mood', 'cvm', or 'baumgartner'")
+      !method %in% c("lepage", "mw", "mood", "cvm", "baumgartner", "zhang")) {
+    stop("Error: method must be exactly one of 'lepage', 'mw', 'mood', 'cvm', 'baumgartner', or 'zhang'")
   }
   if (!is.numeric(alpha) || length(alpha) != 1L || is.na(alpha) || !is.finite(alpha)) {
     stop("Error: alpha must be a single supported numeric value")
@@ -93,7 +107,14 @@ detectChanges <- function(y, alpha = 0.05, prune = TRUE, M = 10000, d = 2,
   if (!is.numeric(M) || length(M) != 1L || is.na(M) || !is.finite(M) || M != 10000) {
     stop("Error: bundled thresholds support only M=10000")
   }
-  if (!is.numeric(d) || length(d) != 1L || is.na(d) || !is.finite(d) || d != 2) {
+  if (method == "zhang") {
+    if (!missing(d) &&
+        (!is.numeric(d) || length(d) != 1L || is.na(d) || !is.finite(d) || d != 4)) {
+      stop("Error: method='zhang' supports only d=4")
+    }
+    d <- 4L
+  } else if (!is.numeric(d) || length(d) != 1L || is.na(d) ||
+             !is.finite(d) || d != 2) {
     stop("Error: bundled thresholds support only d=2")
   }
   if (!is.logical(prune) || length(prune) != 1L || is.na(prune)) {
@@ -103,6 +124,9 @@ detectChanges <- function(y, alpha = 0.05, prune = TRUE, M = 10000, d = 2,
     stop("Error: breakTies must be TRUE or FALSE")
   }
 
+  if (method == "zhang") {
+    .zhang_moment_artifacts(length(y))
+  }
   thresholds <- prepareThresholds(selectThresholds(method, alpha), length(y), method)
   if (anyDuplicated(y)) {
     if (!breakTies) stop("Error: ties are present and breakTies=FALSE")

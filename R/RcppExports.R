@@ -21,3 +21,7 @@ cpp_scan_mw <- function(x, starts, ends, d = 2L) {
     .Call(`_npwbs_cpp_scan_mw`, x, starts, ends, d)
 }
 
+cpp_scan_zhang <- function(x, starts, ends, d, bundled, extended = NULL) {
+    .Call(`_npwbs_cpp_scan_zhang`, x, starts, ends, d, bundled, extended)
+}
+

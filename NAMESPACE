@@ -1,3 +1,4 @@
 useDynLib(npwbs, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
 export(detectChanges)
+export(download_zhang_moments)

@@ -80,6 +80,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_scan_zhang
+Rcpp::List cpp_scan_zhang(Rcpp::NumericVector x, Rcpp::IntegerVector starts, Rcpp::IntegerVector ends, int d, Rcpp::List bundled, Rcpp::Nullable<Rcpp::List> extended);
+RcppExport SEXP _npwbs_cpp_scan_zhang(SEXP xSEXP, SEXP startsSEXP, SEXP endsSEXP, SEXP dSEXP, SEXP bundledSEXP, SEXP extendedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type starts(startsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ends(endsSEXP);
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type bundled(bundledSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::List> >::type extended(extendedSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_scan_zhang(x, starts, ends, d, bundled, extended));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_npwbs_cpp_scan_baumgartner", (DL_FUNC) &_npwbs_cpp_scan_baumgartner, 4},
@@ -87,6 +103,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_npwbs_cpp_scan_lepage", (DL_FUNC) &_npwbs_cpp_scan_lepage, 4},
     {"_npwbs_cpp_scan_mood", (DL_FUNC) &_npwbs_cpp_scan_mood, 4},
     {"_npwbs_cpp_scan_mw", (DL_FUNC) &_npwbs_cpp_scan_mw, 4},
+    {"_npwbs_cpp_scan_zhang", (DL_FUNC) &_npwbs_cpp_scan_zhang, 6},
     {NULL, NULL, 0}
 };
 
