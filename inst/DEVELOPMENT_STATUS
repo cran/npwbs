@@ -1,0 +1,3 @@
+The verified M=1000 calibrations for Lepage, MW, Mood, CvM, modified
+Baumgartner, Zhang, and Anderson--Darling are imported and used by default.
+Exact frozen M=10000 tables remain available for the pre-existing methods.

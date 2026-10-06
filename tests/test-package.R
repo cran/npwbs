@@ -3,10 +3,12 @@ ns <- asNamespace("npwbs")
 get_ns <- function(name) get(name, envir = ns)
 RNGkind("Mersenne-Twister", "Inversion", "Rejection")
 
-expected_formals <- c("y", "alpha", "prune", "M", "d", "displayOutput", "method", "breakTies")
+expected_formals <- c("y", "alpha", "prune", "M", "d", "displayOutput", "method", "breakTies", "combination")
 stopifnot(identical(names(formals(detectChanges)), expected_formals))
 stopifnot(identical(formals(detectChanges)$method, "lepage"))
 stopifnot(identical(formals(detectChanges)$breakTies, TRUE))
+stopifnot(identical(formals(detectChanges)$combination, "sum"))
+stopifnot(identical(formals(detectChanges)$M, 1000))
 stopifnot(
   identical(names(formals(download_zhang_moments)), "overwrite"),
   identical(formals(download_zhang_moments)$overwrite, FALSE)
@@ -36,8 +38,9 @@ stopifnot(
 warning_count <- 0L
 warning_messages <- character()
 tail_thresholds <- withCallingHandlers(
-  get_ns("prepareThresholds")(get_ns("BaumgartnerThresholds05"), 10002L,
-                              "baumgartner"),
+  get_ns("prepareThresholds")(get_ns("selectThresholdEntry")(
+    "baumgartner", "sum", 10000, 0.05, 2
+  ), 10002L),
   warning = function(w) {
     warning_count <<- warning_count + 1L
     warning_messages <<- c(warning_messages, conditionMessage(w))
@@ -201,7 +204,7 @@ if (is.na(old_user_data)) {
 
 continuous <- rnorm(40)
 set.seed(4101)
-named <- detectChanges(continuous, prune = FALSE)
+named <- detectChanges(continuous, prune = FALSE, M = 10000)
 set.seed(4101)
 positional <- detectChanges(continuous, 0.05, FALSE, 10000, 2, FALSE)
 stopifnot(identical(named, positional))
@@ -221,9 +224,9 @@ second <- suppressWarnings(detectChanges(tied, prune = FALSE))
 stopifnot(length(warnings) == 1L, identical(first, second))
 
 expect_error(detectChanges(continuous, method = "MW"), "method must be exactly")
-expect_error(detectChanges(continuous, method = "mw", alpha = 0.01), "supports only alpha=0.05")
+expect_error(detectChanges(continuous, method = "mw", alpha = 0.01), "no built-in threshold calibration")
 expect_error(detectChanges(continuous, method = "baumgartner", alpha = 0.01),
-             "supports only alpha=0.05")
-expect_error(detectChanges(continuous, method = "baumgartner", M = 100), "M=10000")
+             "no built-in threshold calibration")
+expect_error(detectChanges(continuous, method = "baumgartner", M = 100), "M must be exactly 1000 or 10000")
 expect_error(detectChanges(continuous, method = "baumgartner", d = 3), "d=2")
 expect_error(detectChanges(tied, breakTies = FALSE), "ties are present")

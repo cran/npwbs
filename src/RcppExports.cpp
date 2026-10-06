@@ -10,6 +10,20 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// cpp_scan_anderson_darling
+Rcpp::List cpp_scan_anderson_darling(Rcpp::NumericVector x, Rcpp::IntegerVector starts, Rcpp::IntegerVector ends, int d);
+RcppExport SEXP _npwbs_cpp_scan_anderson_darling(SEXP xSEXP, SEXP startsSEXP, SEXP endsSEXP, SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type starts(startsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ends(endsSEXP);
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_scan_anderson_darling(x, starts, ends, d));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_scan_baumgartner
 Rcpp::List cpp_scan_baumgartner(Rcpp::NumericVector x, Rcpp::IntegerVector starts, Rcpp::IntegerVector ends, int d);
 RcppExport SEXP _npwbs_cpp_scan_baumgartner(SEXP xSEXP, SEXP startsSEXP, SEXP endsSEXP, SEXP dSEXP) {
@@ -39,8 +53,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_scan_lepage
-Rcpp::List cpp_scan_lepage(Rcpp::NumericVector x, Rcpp::IntegerVector starts, Rcpp::IntegerVector ends, int d);
-RcppExport SEXP _npwbs_cpp_scan_lepage(SEXP xSEXP, SEXP startsSEXP, SEXP endsSEXP, SEXP dSEXP) {
+Rcpp::List cpp_scan_lepage(Rcpp::NumericVector x, Rcpp::IntegerVector starts, Rcpp::IntegerVector ends, int d, std::string combination);
+RcppExport SEXP _npwbs_cpp_scan_lepage(SEXP xSEXP, SEXP startsSEXP, SEXP endsSEXP, SEXP dSEXP, SEXP combinationSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -48,7 +62,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type starts(startsSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ends(endsSEXP);
     Rcpp::traits::input_parameter< int >::type d(dSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_scan_lepage(x, starts, ends, d));
+    Rcpp::traits::input_parameter< std::string >::type combination(combinationSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_scan_lepage(x, starts, ends, d, combination));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -98,9 +113,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_npwbs_cpp_scan_anderson_darling", (DL_FUNC) &_npwbs_cpp_scan_anderson_darling, 4},
     {"_npwbs_cpp_scan_baumgartner", (DL_FUNC) &_npwbs_cpp_scan_baumgartner, 4},
     {"_npwbs_cpp_scan_cvm", (DL_FUNC) &_npwbs_cpp_scan_cvm, 4},
-    {"_npwbs_cpp_scan_lepage", (DL_FUNC) &_npwbs_cpp_scan_lepage, 4},
+    {"_npwbs_cpp_scan_lepage", (DL_FUNC) &_npwbs_cpp_scan_lepage, 5},
     {"_npwbs_cpp_scan_mood", (DL_FUNC) &_npwbs_cpp_scan_mood, 4},
     {"_npwbs_cpp_scan_mw", (DL_FUNC) &_npwbs_cpp_scan_mw, 4},
     {"_npwbs_cpp_scan_zhang", (DL_FUNC) &_npwbs_cpp_scan_zhang, 6},

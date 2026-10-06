@@ -156,7 +156,7 @@ download_zhang_moments <- function(overwrite = FALSE) {
 
   message("Downloading Zhang moment table (approximately 19.3 MB)...")
   utils::download.file(
-    "http://gordonjross.co.uk/zhang_zc_moments_d4_n1001_3000.rds",
+    "https://gordonjross.co.uk/zhang_zc_moments_d4_n1001_3000.rds",
     temporary,
     mode = "wb",
     quiet = FALSE
